@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sound Cloud Player</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="https://connect.soundcloud.com/sdk/sdk-3.3.0.js"></script>
+</head>
+<body>
+    <div class="scp">
+        <div class="scp-header">
+            Hello
+        </div>
+        <div class="scp-container">
+            <div class="scp-search">
+                <div class="scp-search-header">
+                    <input class="scp-input" id="searchItem" placeholder="Enter search term...">
+                    <button class="scp-button" id="go">Search</button>
+                </div>
+                <ul class="scp-list listView" id="searchResults">
+                </ul>
+                <div class="scp-search-footer">
+                    <button class="scp-button hide" id="next">Next 6 results</button>
+                    <div class="scp-list-view hide">
+                        <button class="scp-button" id="listView">L</button>
+                        <button class="scp-button" id="gridView">G</button>
+                    </div>
+                </div>
+            </div>
+            <div class="scp-player">
+                <img src="assets/scp-thumb.png">
+                <audio id="scp-player" src="" preload="auto"></audio>
+            </div>
+            <div class="scp-recent">
+                <div class="scp-recent-header">
+                    <span>Recent Searches</span>
+                    <button class="scp-button" id="clearHistory">Clear history</button>
+                </div>
+                <ul class="scp-list" id="recentSearches"></ul>
+            </div>
+        </div>
+        <div class="scp-message">
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+</html>
