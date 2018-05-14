@@ -3,25 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Sound Cloud Player</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
     <link rel="stylesheet" href="styles/styles.css">
     <script src="https://connect.soundcloud.com/sdk/sdk-3.3.0.js"></script>
 </head>
 <body>
     <div class="scp">
         <div class="scp-header">
-            Hello
+            <span>Hello, </span><span class="scp-user"></span><a href="#"> Not you?</a>
         </div>
         <div class="scp-container">
             <div class="scp-search">
                 <div class="scp-search-header">
-                    <input class="scp-input" id="searchItem" placeholder="Enter search term...">
+                    <input class="scp-input" id="searchItem" autofocus placeholder="Enter search term...">
                     <button class="scp-button" id="go">Search</button>
                 </div>
                 <ul class="scp-list listView" id="searchResults">
+                   <span class="infoBoard">search something</span>
                 </ul>
                 <div class="scp-search-footer">
-                    <button class="scp-button hide" id="next">Next 6 results</button>
-                    <div class="scp-list-view hide">
+                    <button class="scp-button disable" id="next">Next 6 results</button>
+                    <div class="scp-list-view disable">
                         <button class="scp-button" id="listView">L</button>
                         <button class="scp-button" id="gridView">G</button>
                     </div>
@@ -29,14 +31,19 @@
             </div>
             <div class="scp-player">
                 <img src="assets/scp-thumb.png">
-                <audio id="scp-player" src="" preload="auto"></audio>
+                <audio id="scp-player" src="#" preload="auto"></audio>
+                <div class="songInfo"><span>-</span></div>
+                <div class="scp-player-footer"></div>
             </div>
             <div class="scp-recent">
                 <div class="scp-recent-header">
                     <span>Recent Searches</span>
                     <button class="scp-button" id="clearHistory">Clear history</button>
                 </div>
-                <ul class="scp-list" id="recentSearches"></ul>
+                <ol class="scp-list" id="recentSearches"></ol>
+                <div class="scp-recent-footer">
+
+                </div>
             </div>
         </div>
         <div class="scp-message">
