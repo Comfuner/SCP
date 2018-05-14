@@ -35,6 +35,7 @@ let templates =
 
 // Functions
 let create = {
+    // compile a string from a template and matching data.
     template(template, data) {
         let tempData = template.match(/{([^}]+)}/g);
         tempData.map(function (item) {
@@ -42,6 +43,7 @@ let create = {
         });
         return template
     },
+    // create a specific li with html content
     child(template) {
         let tempLiChild = document.createElement('li');
         tempLiChild.innerHTML = template;
@@ -49,10 +51,9 @@ let create = {
     }
 };
 let results = {
+    // clear and prints the new list of results and attach events to the newly created items
     printList(data, searchTerm) {
         resultsContainer.innerHTML = "";
-        if (searchTerm !== lastInputValue) history.save(searchTerm);
-        // print results
         let isGrid = resultsContainer.classList.contains('gridView');
         data.collection.map(function (item) {
             let tempLi = create.child(create.template(templates.searchResult, item) + "");
@@ -77,9 +78,9 @@ let results = {
         viewButton.classList.remove('disable');
         nextButton.classList.remove('disable');
         if (data.next_href) localStorage.setItem('next_href', data.next_href);
-        lastInputValue = searchTerm;
-        //
+
     },
+    // fetch results according to the soundCloud HTTP api
     get(url, searchTerm) {
         fetch(url)
             .then(
@@ -101,6 +102,7 @@ let results = {
                 console.error('Error: ', err);
             });
     },
+    // animation sequence and specific result play
     animateAndPlay(elem, item) {
         //elem = elem.querySelector('span');
         let ghostElem = document.createElement('div');
@@ -150,6 +152,7 @@ let results = {
     }
 };
 let history = {
+    // fetch the remote history of searches and attach events to newly created.
     returnRemoteState() {
         historyContainer.innerHTML = "";
         let tempArray = JSON.parse(localStorage.getItem('scp-history'));
@@ -157,11 +160,12 @@ let history = {
             let tempLi = create.child(create.template(templates.simpleSpan, {title: item}));
             tempLi.addEventListener('click', function () {
                 inputBox.value = item;
-                results.get('http://api.soundcloud.com/tracks.json?client_id=' + playerID + '&q=' + item + '&limit=' + numOfResults + '&linked_partitioning=1', item);
+                results.get('//api.soundcloud.com/tracks.json?client_id=' + playerID + '&q=' + item + '&limit=' + numOfResults + '&linked_partitioning=1', item);
             });
             historyContainer.append(tempLi);
         })
     },
+    // return encoded string value of the entire recent searches list
     returnLocalState() {
         let tempArray = [];
         Array.from(historyContainer.querySelectorAll('li')).map(function (item) {
@@ -169,6 +173,7 @@ let history = {
         });
         return JSON.stringify(tempArray);
     },
+    // manage recent searches queue and saving new search term
     save(searchTerm) {
         let historyLength = Array.from(historyContainer.querySelectorAll('li')).length;
         if (historyLength > 4) {
@@ -177,15 +182,16 @@ let history = {
         let tempLi = create.child(create.template(templates.simpleSpan, {title: searchTerm}));
         tempLi.addEventListener('click', function () {
             inputBox.value = searchTerm;
-            results.get('http://api.soundcloud.com/tracks.json?client_id=' + playerID + '&q=' + searchTerm + '&limit=' + numOfResults + '&linked_partitioning=1', searchTerm);
+            results.get('//api.soundcloud.com/tracks.json?client_id=' + playerID + '&q=' + searchTerm + '&limit=' + numOfResults + '&linked_partitioning=1', searchTerm);
         });
         historyContainer.insertBefore(tempLi, historyContainer.firstChild);
         localStorage.setItem('scp-history', this.returnLocalState());
     }
 };
 let user = {
+    // get user data according to the soundCloud HTTP api
     retrieve() {
-        fetch("http://api.soundcloud.com/users/3207?client_id=" + playerID)
+        fetch("//api.soundcloud.com/users/3207?client_id=" + playerID)
             .then(
                 function (response) {
                     if (response.status !== 200) {
@@ -203,7 +209,8 @@ let user = {
     }
 };
 let utils = {
-    // checkOverFlow =>credit to: https://stackoverflow.com/users/811/shog9
+    // checkOverFlow function => credit to: https://stackoverflow.com/users/811/shog9
+    // checks if a certain element is overflowing its content
     checkOverFlow(el) {
         let curOverflow = el.style.overflow;
         if (!curOverflow || curOverflow === "visible")
@@ -213,6 +220,7 @@ let utils = {
         el.style.overflow = curOverflow;
         return isOverflowing;
     },
+    // document ready function for init
     ready(fn) {
     if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
         fn();
@@ -223,6 +231,8 @@ let utils = {
 };
 
 // Events
+
+// player ongoing toggle events
 thePlayer.onplaying = function () {
     isPlaying = true;
     infoText.innerText = 'playing';
@@ -238,6 +248,7 @@ scpPlayerImg.addEventListener('click', function () {
         thePlayer.play();
     }
 });
+//
 listViewButton.addEventListener('click', function () {
     localStorage.setItem('scp-grid', "false");
     resultsContainer.classList.add('listView');
@@ -259,7 +270,12 @@ gridViewButton.addEventListener('click', function () {
     resultsContainer.classList.add('gridView');
 });
 goButton.addEventListener('click', function () {
-    results.get('http://api.soundcloud.com/tracks.json?client_id=' + playerID + '&q=' + inputBox.value + '&limit=' + numOfResults + '&linked_partitioning=1', inputBox.value);
+    if (inputBox.value !== lastInputValue)
+    {
+        history.save(inputBox.value);
+        results.get('//api.soundcloud.com/tracks.json?client_id=' + playerID + '&q=' + inputBox.value + '&limit=' + numOfResults + '&linked_partitioning=1', inputBox.value);
+        lastInputValue = searchTerm;
+    }
 });
 nextButton.addEventListener('click', function () {
     results.get(localStorage.getItem('next_href'), inputBox.value);
@@ -271,7 +287,7 @@ clearButton.addEventListener('click', function () {
 inputBox.addEventListener('keyup', function (e) {
     e.preventDefault();
     if (e.keyCode === 13) {
-        results.get('http://api.soundcloud.com/tracks.json?client_id=' + playerID + '&q=' + inputBox.value + '&limit=' + numOfResults + '&linked_partitioning=1', inputBox.value);
+        results.get('//api.soundcloud.com/tracks.json?client_id=' + playerID + '&q=' + inputBox.value + '&limit=' + numOfResults + '&linked_partitioning=1', inputBox.value);
     }
 });
 
