@@ -287,7 +287,12 @@ clearButton.addEventListener('click', function () {
 inputBox.addEventListener('keyup', function (e) {
     e.preventDefault();
     if (e.keyCode === 13) {
-        results.get('//api.soundcloud.com/tracks.json?client_id=' + playerID + '&q=' + inputBox.value + '&limit=' + numOfResults + '&linked_partitioning=1', inputBox.value);
+        if (inputBox.value !== lastInputValue)
+        {
+            history.save(inputBox.value);
+            results.get('//api.soundcloud.com/tracks.json?client_id=' + playerID + '&q=' + inputBox.value + '&limit=' + numOfResults + '&linked_partitioning=1', inputBox.value);
+            lastInputValue = searchTerm;
+        }
     }
 });
 
